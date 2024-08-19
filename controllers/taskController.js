@@ -79,6 +79,36 @@ const deleteTask = async (req, res) => {
   }
 };
 
+// Handles GET request to search tasks based on keyword
+const searchTasks = async (req, res) => {
+  // Extract keyword from query parameters
+  const keyword = req.query.keyword;
+
+  try {
+    const tasks = await taskService.searchTasks(keyword);
+    res.json(tasks);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to search tasks" });
+  }
+};
+
+// Handle request to filter tasks by status or priority
+const filterTasks = async (req, res) => {
+  const { status, priority } = req.query; // Extract status and priority from query parameters
+
+  const filter = { status, priority };
+
+  try {
+    const result = await taskService.filterTasks(filter);
+    if (result.error) {
+      return res.status(400).json({ error: result.error });
+    }
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ error: "An error occurred while filtering tasks" });
+  }
+};
+
 module.exports = {
   getAllTasks,
   getTaskById,
@@ -86,4 +116,6 @@ module.exports = {
   updateTask,
   partiallyUpdateTask,
   deleteTask,
+  searchTasks,
+  filterTasks,
 };

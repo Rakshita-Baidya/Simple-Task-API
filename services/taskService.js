@@ -124,6 +124,57 @@ const deleteTask = async (id) => {
   return true;
 };
 
+// Search for tasks using a keyword
+const searchTasks = async (keyword) => {
+  // If no keyword is provided, return all tasks
+  if (!keyword) return tasks;
+
+  const lowerCaseKeyword = keyword.toLowerCase();
+
+  return tasks.filter(
+    (task) =>
+      task.name.toLowerCase().includes(lowerCaseKeyword) ||
+      task.description.toLowerCase().includes(lowerCaseKeyword)
+  );
+};
+
+// filter tasks by status and priority
+const filterTasks = async (filter) => {
+  let { status, priority } = filter;
+
+  // Define valid values
+  const validStatuses = ["to_do", "doing", "done"];
+  const validPriorities = ["high", "normal", "low"];
+
+  // Validate status
+  if (status && !validStatuses.includes(status.toLowerCase())) {
+    return { error: `Status must be one of: ${validStatuses.join(", ")}` };
+  }
+
+  // Validate priority
+  if (priority && !validPriorities.includes(priority.toLowerCase())) {
+    return { error: `Priority must be one of: ${validPriorities.join(", ")}` };
+  }
+
+  let filteredTasks = tasks;
+
+  // Filter by status if provided
+  if (status) {
+    filteredTasks = filteredTasks.filter(
+      (task) => task.status.toLowerCase() === status.toLowerCase()
+    );
+  }
+
+  // Filter by priority if provided
+  if (priority) {
+    filteredTasks = filteredTasks.filter(
+      (task) => task.priority.toLowerCase() === priority.toLowerCase()
+    );
+  }
+
+  return filteredTasks;
+};
+
 module.exports = {
   getAllTasks,
   getTaskById,
@@ -131,4 +182,6 @@ module.exports = {
   updateTask,
   partiallyUpdateTask,
   deleteTask,
+  searchTasks,
+  filterTasks,
 };

@@ -4,6 +4,12 @@ const taskController = require("../controllers/taskController");
 const taskValidation = require("../middleware/taskValidation");
 const taskExists = require("../middleware/taskExists");
 
+// Route to search tasks with keyword
+router.get("/tasks/search", taskController.searchTasks);
+
+// Route to filter tasks
+router.get("/tasks/filter", taskController.filterTasks);
+
 // Route to get all tasks
 router.get("/tasks", taskController.getAllTasks);
 
