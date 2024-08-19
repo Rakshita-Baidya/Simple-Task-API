@@ -34,6 +34,7 @@ const createTask = async (newTask) => {
     name: newTask.name,
     description: newTask.description,
     createdAt: new Date().toLocaleString(),
+    priority: newTask.priority || "normal",
     status: newTask.status || "to_do",
   };
   tasks.push(task);
@@ -52,10 +53,23 @@ const updateTask = async (id, updatedTask) => {
   const index = tasks.findIndex((task) => task.id === parseInt(id));
   if (index === -1) return null;
 
-  const { name, description } = updatedTask;
+  const { name, description, priority } = updatedTask;
 
+  // Define valid priority values
+  const validPriority = ["low", "normal", "high"];
+
+  // Update fields if provided and valid
   if (name) tasks[index].name = name;
   if (description) tasks[index].description = description;
+
+  if (priority) {
+    // Check if the provided priority is valid
+    if (validPriority.includes(priority)) {
+      tasks[index].priority = priority;
+    } else {
+      return { error: "Invalid priority value" };
+    }
+  }
 
   // Save updated tasks to file
   fs.writeFile(tasksPath, JSON.stringify(tasks, null, 2), (err) => {
